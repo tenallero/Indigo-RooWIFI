@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Actions>	
+	<Action id="clean" deviceFilter="self">
+		<Name>Start cleaning</Name>
+		<CallbackMethod>buttonClean</CallbackMethod>
+	</Action>
+	<Action id="stop" deviceFilter="self">
+		<Name>Stop</Name>
+		<CallbackMethod>buttonStop</CallbackMethod>
+	</Action>
+	<Action id="dock" deviceFilter="self">
+		<Name>Return to Dock</Name>
+		<CallbackMethod>buttonDock</CallbackMethod>
+	</Action>	
+</Actions>
