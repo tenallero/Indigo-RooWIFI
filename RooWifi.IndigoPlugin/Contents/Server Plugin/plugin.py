@@ -18,12 +18,14 @@ import decimal
 import datetime
 import socket
 from xml.etree import ElementTree as ET
+from ghpu import GitHubPluginUpdater
 
 class Plugin(indigo.PluginBase):
 
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
-
+        self.updater = GitHubPluginUpdater(self)
+        
         # Timeout
         self.reqTimeout = 8
         
@@ -74,6 +76,8 @@ class Plugin(indigo.PluginBase):
 
         #self.debugLog("Pooling Interval: " + str(self.pollingInterval))    
         #self.debugLog("Request Timeout: " + str(self.reqTimeout))  
+        
+        self.updater.checkForUpdate()
 
     def shutdown(self):
         self.debugLog(u"shutdown called")
@@ -501,3 +505,30 @@ class Plugin(indigo.PluginBase):
             indigo.server.log(u"sent \"%s\" %s" % (device.name, "status request"))
             if not(self.sensorUpdate (device,True)):
                 self.errorLog(u"\"%s\" %s" % (device.name, "status request failed"))
+    ########################################
+    # Menu Methods
+    ########################################
+    def toggleDebugging(self):
+        if self.debug:
+            indigo.server.log("Turning off debug logging")
+            self.pluginPrefs["debugEnabled"] = False                
+        else:
+            indigo.server.log("Turning on debug logging")
+            self.pluginPrefs["debugEnabled"] = True
+        self.debug = not self.debug
+        return
+        
+    def menuDeviceDiscovery(self):
+        if self.discoveryWorking:
+            return
+        self.deviceDiscover()
+        return
+        
+    def checkForUpdates(self):
+        update = self.updater.checkForUpdate() 
+        if (update != None):
+            pass
+        return    
+
+    def updatePlugin(self):
+        self.updater.update()
